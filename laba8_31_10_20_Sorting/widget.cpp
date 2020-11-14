@@ -286,6 +286,7 @@ void Widget::bubbleSort()
             for (int j=0; j < ui->mainTable->columnCount() ; ++j)
                 aarr[i*ui->mainTable->columnCount() +j] = ui->mainTable->item(i,j)->text().toFloat();
         }
+        ii=0, jj=0;
 
         tmr = new QTimer(this);
         tmr->setInterval(750);
