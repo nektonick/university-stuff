@@ -46,7 +46,6 @@ private slots:
 private:
 
     Ui::Widget *ui;
-    bool isSortingNow=false;
     bool tableIsOk = false;
     float sum = 0;
     int numOfElements = 0;
@@ -54,7 +53,6 @@ private:
     int maxRand = 200;
     float searchValue=0;
     std::vector<float> arr;
-    int size;
 
     QPalette defPal = QPalette();
     QPalette redPal;
@@ -71,7 +69,6 @@ private:
     void linearSearch();
     bool initializeArrey();
     bool isTableOK();
-
     void bogoSort();
     void shuffle();
     bool isSortCorrect();

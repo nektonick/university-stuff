@@ -34,6 +34,7 @@ void Widget::on_numOfColumns_textChanged(const QString &arg1)
         ui->numOfColumns->setPalette(redPal);
     }
     ui->textOut->clear();
+
 }
 
 void Widget::on_numOfRows_textChanged(const QString &arg1)
@@ -101,15 +102,17 @@ void Widget::on_randomFill_clicked()
 
 void Widget::on_getMinButton_clicked()
 {
-    tableIsOk = isTableOK();
-    if (tableIsOk){
+    if (isTableOK()){
         float min = ui->mainTable->item(0,0)->text().toFloat();
 
         for (int i = 0; i< ui->mainTable->rowCount(); ++i){
             for (int j=0; j< ui->mainTable->columnCount(); ++j){
-                if (ui->mainTable->item(i,j)->text().toFloat() < min){
-                    min = ui->mainTable->item(i,j)->text().toFloat();
+                if(ui->mainTable->item(i,j) != nullptr){
+                    if (ui->mainTable->item(i,j)->text().toFloat() < min){
+                        min = ui->mainTable->item(i,j)->text().toFloat();
+                    }
                 }
+
             }
         }
         ui->textOut->setText("Минимум = " + QString::number(min));
@@ -122,14 +125,15 @@ void Widget::on_getMinButton_clicked()
 
 void Widget::on_getMaxButton_clicked()
 {
-    tableIsOk = isTableOK();
-    if (tableIsOk){
+    if (isTableOK()){
         float max = ui->mainTable->item(0,0)->text().toFloat();
 
         for (int i = 0; i< ui->mainTable->rowCount(); ++i){
             for (int j=0; j< ui->mainTable->columnCount(); ++j){
-                if (ui->mainTable->item(i,j)->text().toFloat() > max){
-                    max = ui->mainTable->item(i,j)->text().toFloat();
+                if(ui->mainTable->item(i,j) != nullptr){
+                    if (ui->mainTable->item(i,j)->text().toFloat() > max){
+                        max = ui->mainTable->item(i,j)->text().toFloat();
+                    }
                 }
             }
         }
@@ -142,16 +146,13 @@ void Widget::on_getMaxButton_clicked()
 
 void Widget::on_meanInt_clicked()
 {
-    tableIsOk = isTableOK();
-    if (tableIsOk){
+    if (isTableOK()){
+        initializeArrey();
         sum = 0;
-        for (int i = 0; i< ui->mainTable->rowCount(); ++i){
-            for (int j=0; j< ui->mainTable->columnCount(); ++j){
-                sum+=ui->mainTable->item(i,j)->text().toFloat();
-            }
+        for (size_t i = 0; i< arr.size(); ++i){
+            sum+=arr[i];
         }
-        ui->textOut->setText("Среднее значение = " + QString::number(sum /
-                                                                     (ui->mainTable->rowCount() * ui->mainTable->columnCount()) ) );
+        ui->textOut->setText("Среднее значение = " + QString::number(sum / arr.size()));
     }
     else{
         ui->textOut->setText("Сначала корректно заполните таблицу");
@@ -161,6 +162,7 @@ void Widget::on_meanInt_clicked()
 void Widget::on_sortButton_clicked()
 {
     tableIsOk = isTableOK();
+    initializeArrey();
     if (tableIsOk){
         Dialog d;
         if (ui->mainTable->rowCount() * ui->mainTable->columnCount() > 40000){ // > 200*200
@@ -168,7 +170,6 @@ void Widget::on_sortButton_clicked()
                 return;
             }
         }
-        isSortingNow = true;
         int type = ui->typeOfSorting->currentIndex();
 
         ui->textOut->clear();
@@ -193,14 +194,17 @@ void Widget::on_sortButton_clicked()
         default:
             ui->textOut->setText("sort type error");
         }
+        ui->textOut->setText(ui->textOut->toPlainText() + "\n" + "Сортировка завершена");
     }
     else{
         ui->textOut->setText("Сначала корректно заполните таблицу");
     }
+
 }
 
 bool Widget::isTableOK()
 {
+    initializeArrey();
     bool ans=true;
     for (int i = 0; i< ui->mainTable->rowCount(); ++i){
         for (int j=0; j< ui->mainTable->columnCount(); ++j){
@@ -214,21 +218,16 @@ bool Widget::isTableOK()
                     break;
                 }
             }
-            else{
-                ui->mainTable->scrollToItem(ui->mainTable->item(i,j));
-                ui->mainTable->editItem(ui->mainTable->item(i,j));
-                ans = false;
-                break;
-            }
-
         }
     }
     if (ui->mainTable->rowCount() <= 0 || ui->mainTable->columnCount() <= 0){
         ans = false;
     }
+    if (arr.size() ==0){
+        ans = false;
+    }
     return ans;
 }
-
 
 void Widget::on_mainTable_itemChanged(QTableWidgetItem *item)
 {
@@ -239,20 +238,18 @@ void Widget::on_mainTable_itemChanged(QTableWidgetItem *item)
             item->setBackground(Qt::red);
         }
         else{
-            if (!isSortingNow)
-                item->setBackground(Qt::white);
+            item->setBackground(Qt::white);
         }
     }
 }
-
 
 void Widget::bubbleSort()
 {
 
     fromTableToArrey();
 
-    for (int i = 0; i < size - 1; i++) {
-        for (int j = 0; j < size - i - 1; j++) {
+    for (size_t i = 0; i < arr.size() - 1; i++) {
+        for (size_t j = 0; j < arr.size() - i - 1; j++) {
             if (arr[j] > arr[j + 1]) {
                 std::swap(arr[j], arr[j+1]);
             }
@@ -289,22 +286,21 @@ void Widget::quickSort(int low, int high)
 
 void Widget::fastSort()
 {
-    size = ui->mainTable->rowCount() * ui->mainTable->columnCount();
 
     fromTableToArrey();
 
-    quickSort(0, size-1);
+    quickSort(0, arr.size()-1);
 
     fromArreyToTable();
 }
 
 void Widget::comb(){
     float factor = 1.2473309; // фактор уменьшения
-    float step = size - 1; // шаг сортировки
+    float step = arr.size()- 1; // шаг сортировки
 
     while (step >= 1)
     {
-        for (int i = 0; i + step < size; i++)
+        for (int i = 0; i + step < arr.size(); i++)
         {
             if (arr[i] > arr[int(i + step)])
             {
@@ -317,9 +313,6 @@ void Widget::comb(){
 
 void Widget::combSort()
 {
-    size = ui->mainTable->rowCount() * ui->mainTable->columnCount();
-
-
     fromTableToArrey();
 
     comb();
@@ -328,8 +321,8 @@ void Widget::combSort()
 }
 
 void Widget::gnome(){
-    int index = 0;
-    while (index < size) {
+    size_t index = 0;
+    while (index < arr.size()) {
         if (index == 0)
             index++;
         if (arr[index] >= arr[index - 1])
@@ -343,7 +336,6 @@ void Widget::gnome(){
 
 void Widget::gnomeSort()
 {
-    size = ui->mainTable->rowCount() * ui->mainTable->columnCount();
 
     fromTableToArrey();
 
@@ -352,31 +344,8 @@ void Widget::gnomeSort()
     fromArreyToTable();
 }
 
-bool Widget::isSortCorrect() {
-
-    for (size_t i=1; i< arr.size(); ++i){
-        if (arr[i]<arr[i-1])
-            return false;
-    }
-    return true;
-
-}
-
-void Widget::shuffle() {
-    for (int i = 0; i < size; ++i){
-        srand((unsigned int)clock());
-        std::swap(arr[i], arr[(rand() % size)]);
-    }
-}
-
-void Widget::bogoSort() {
-    while (!isSortCorrect())
-        shuffle();
-}
-
 void Widget::monkeySort()
 {
-    size = ui->mainTable->rowCount() * ui->mainTable->columnCount();
 
     fromTableToArrey();
 
@@ -385,14 +354,22 @@ void Widget::monkeySort()
     fromArreyToTable();
 }
 
+void Widget::bogoSort() {
+    while (!isSortCorrect())
+        shuffle();
+}
+
+void Widget::shuffle() {
+    for (size_t i = 0; i < arr.size(); ++i){
+        srand((unsigned int)clock());
+        std::swap(arr[i], arr[(rand() % arr.size())]);
+    }
+}
+
 void Widget::fromTableToArrey()
 {
+    ui->textOut->setText(ui->textOut->toPlainText() + "\n" + "Начата запись в таблицу");
     if (initializeArrey()){
-
-        for (int i = 0; i < ui->mainTable->rowCount(); ++ i) {
-            for (int j=0; j < ui->mainTable->columnCount() ; ++j)
-                arr[i*ui->mainTable->columnCount() +j] = ui->mainTable->item(i,j)->text().toFloat();
-        }
         ui->mainTable->setDisabled(true);
     }
     else{
@@ -403,25 +380,39 @@ void Widget::fromTableToArrey()
 
 void Widget::fromArreyToTable()
 {
-    for(int i = 0, k = 0; i < ui->mainTable->rowCount(); ++i)
-        for(int j = 0; j < ui->mainTable->columnCount(); ++j)
-            ui->mainTable->item(i,j)->setText(QString::number(arr[k++]));
+    for(size_t i =0; i<arr.size(); ++i){
+        if (ui->mainTable->item(i/ui->mainTable->columnCount(), i%ui->mainTable->columnCount()) != nullptr){
+            ui->mainTable->item(i/ui->mainTable->columnCount(), i%ui->mainTable->columnCount())->setText(QString::number(arr[i]));
+        }
+        else{
+            ui->mainTable->setItem(i/ui->mainTable->columnCount(), i%ui->mainTable->columnCount(), new QTableWidgetItem(QString::number(arr[i])));
+        }
+        ui->mainTable->item(i/ui->mainTable->columnCount(), i%ui->mainTable->columnCount())->setBackground(Qt::white);
+    }
 
-    ui->textOut->setText(ui->textOut->toPlainText() + "\n" + "Сортировка завершена");
+    for (int i =arr.size(); i < ui->mainTable->columnCount() * ui->mainTable->rowCount(); ++i){
+        delete ui->mainTable->item(i/ui->mainTable->columnCount(), i%ui->mainTable->columnCount());
+    }
+    ui->textOut->setText(ui->textOut->toPlainText() + "\n" + "Запись в таблицу завершена");
     ui->mainTable->setDisabled(false);
+
+}
+
+bool Widget::isSortCorrect() {
+    initializeArrey();
+
+    for (size_t i=1; i< arr.size(); ++i){
+        if (arr[i]<arr[i-1])
+            return false;
+    }
+    return true;
 
 }
 
 void Widget::search()
 {
-    size = ui->mainTable->rowCount() * ui->mainTable->columnCount();
 
     if(initializeArrey()){
-        for (int i = 0; i < ui->mainTable->rowCount(); ++ i) {
-            for (int j=0; j < ui->mainTable->columnCount() ; ++j)
-                arr[i*ui->mainTable->columnCount() +j] = ui->mainTable->item(i,j)->text().toFloat();
-        }
-
         if (isSortCorrect()){
             binarySearch();
         }
@@ -432,8 +423,6 @@ void Widget::search()
     else{
         ui->textOut->setText("Ошибка при создании массива для сортировки");
     }
-
-
 }
 
 
@@ -442,17 +431,20 @@ void Widget::binarySearch()
     ui->textOut->setText("Выполняется бинарный поиск числа "+ QString::number(searchValue) + "\n");
 
     std::vector<int> indexes;
-    int l=0, r = size;
+    int l=0, r = arr.size();
 
     while (l <= r) {
         int m = l + (r - l) / 2;
 
+        //нашли элемент с таким значением, но он может быть не первым
         if (arr[m] == searchValue){
+            // некрасивый код
+
             //переходим к самому первому элементу с таким значением
             while (arr[m-1] == searchValue && (m-1) >=0){
                 --m;
             }
-            while ( m < r && arr[m] == searchValue){
+            while ( m <= r && arr[m] == searchValue){
                 try {
                     indexes.push_back(m);
                     ++m;
@@ -460,7 +452,6 @@ void Widget::binarySearch()
                     ui->textOut->setText("операция произошла с ошибкой из-за нехватка помяти");
                     return;
                 }
-
             }
             break;
         }
@@ -486,7 +477,7 @@ void Widget::linearSearch()
 
     std::vector<int> indexes;
 
-    for(int i=0; i<size; ++i){
+    for(size_t i=0; i<arr.size(); ++i){
         if (arr[i] == searchValue){
             try {
                 indexes.push_back(i);
@@ -508,10 +499,15 @@ void Widget::linearSearch()
 
 bool Widget::initializeArrey()
 {
-    size = ui->mainTable->rowCount() * ui->mainTable->columnCount();
-
     try {
-        arr.resize(size);
+        arr.clear();
+        for (int i = 0; i < ui->mainTable->rowCount(); ++ i) {
+            for (int j=0; j < ui->mainTable->columnCount() ; ++j){
+                if (ui->mainTable->item(i,j) != nullptr){
+                    arr.push_back(ui->mainTable->item(i,j)->text().toFloat());
+                }
+            }
+        }
 
     } catch (...) {
 
@@ -552,10 +548,7 @@ void Widget::on_deleteDublicatesButton_clicked()
     if (isSortCorrect() && isTableOK()){
 
         ui->textOut->setText("Начато удаление дубликатов");
-        for (int i = 0; i < ui->mainTable->rowCount(); ++ i) {
-            for (int j=0; j < ui->mainTable->columnCount() ; ++j)
-                arr[i*ui->mainTable->columnCount() +j] = ui->mainTable->item(i,j)->text().toFloat();
-        }
+
 
         arr.resize(unique(arr.begin(),arr.end())-arr.begin());
 
