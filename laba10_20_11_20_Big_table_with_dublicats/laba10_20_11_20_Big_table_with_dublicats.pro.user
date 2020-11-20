@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.11.1, 2020-11-20T21:22:58. -->
+<!-- Written by QtCreator 4.11.1, 2020-11-20T21:29:05. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -287,8 +287,8 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/programs/QT_labs/laba10_14_11_20_Big_table_with_dublicats/laba10_14_11_20_Big_table_with_dublicats.pro</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">D:/programs/QT_labs/laba10_14_11_20_Big_table_with_dublicats/laba10_14_11_20_Big_table_with_dublicats.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/programs/QT_labs/laba10_20_11_20_Big_table_with_dublicats/laba10_20_11_20_Big_table_with_dublicats.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">D:/programs/QT_labs/laba10_20_11_20_Big_table_with_dublicats/laba10_20_11_20_Big_table_with_dublicats.pro</value>
     <value type="QString" key="RunConfiguration.Arguments"></value>
     <value type="bool" key="RunConfiguration.Arguments.multi">false</value>
     <value type="QString" key="RunConfiguration.OverrideDebuggerStartup"></value>
