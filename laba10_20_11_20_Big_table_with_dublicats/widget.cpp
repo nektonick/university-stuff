@@ -485,7 +485,6 @@ void Widget::linearSearch()
                 ui->textOut->setText("операция произошла с ошибкой из-за нехватка помяти");
                 return;
             }
-
         }
     }
 

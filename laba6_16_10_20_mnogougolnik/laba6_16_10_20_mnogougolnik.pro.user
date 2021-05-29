@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.11.1, 2020-11-04T12:05:47. -->
+<!-- Written by QtCreator 4.11.1, 2020-12-21T01:42:37. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -287,8 +287,9 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/programs/KMBO-01-20/laba6_16_10_20_mnogougolnik/laba6_16_10_20_mnogougolnik.pro</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">D:/programs/KMBO-01-20/laba6_16_10_20_mnogougolnik/laba6_16_10_20_mnogougolnik.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">laba6_16_10_20_mnogougolnik2</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:D:/programs/QT_labs/laba6_16_10_20_mnogougolnik/laba6_16_10_20_mnogougolnik.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">D:/programs/QT_labs/laba6_16_10_20_mnogougolnik/laba6_16_10_20_mnogougolnik.pro</value>
     <value type="QString" key="RunConfiguration.Arguments"></value>
     <value type="bool" key="RunConfiguration.Arguments.multi">false</value>
     <value type="QString" key="RunConfiguration.OverrideDebuggerStartup"></value>
